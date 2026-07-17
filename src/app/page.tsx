@@ -276,6 +276,8 @@ export default function Home() {
   const [galleryLoading, setGalleryLoading] = useState(true);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [activeCategory, setActiveCategory] = useState("all");
+  // Track active artwork ID for touch/mobile devices to toggle information overlay
+  const [activeArtworkId, setActiveArtworkId] = useState<string | null>(null);
   const [testimonials, setTestimonialList] = useState<Testimonial[]>(MOCK_TESTIMONIALS);
 
   const filteredArtworks = activeCategory === "all"
@@ -313,6 +315,17 @@ export default function Home() {
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [mouseX, mouseY]);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".gallery-card")) {
+        setActiveArtworkId(null);
+      }
+    };
+    document.addEventListener("click", handleOutsideClick);
+    return () => document.removeEventListener("click", handleOutsideClick);
+  }, []);
 
   // Load artworks from Firestore
   useEffect(() => {
@@ -783,7 +796,13 @@ export default function Home() {
                   onMouseEnter={() => setPaletteFromColor(art.dominantColor)}
                   onMouseLeave={resetPalette}
                 >
-                  <div className="relative aspect-[3/4] overflow-hidden bg-neutral-900 border border-white/5 group cursor-default">
+                  <div 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveArtworkId(activeArtworkId === art.id ? null : art.id);
+                    }}
+                    className="gallery-card relative aspect-[3/4] overflow-hidden bg-neutral-900 border border-white/5 group cursor-pointer"
+                  >
                     <Image
                       src={art.finalImageUrl}
                       alt={art.title || "Gallery Artwork"}
@@ -792,9 +811,21 @@ export default function Home() {
                       className="object-cover"
                     />
 
-                    {/* Semi-transparent dark overlay showing title and description on hover */}
-                    <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-end p-6 select-none">
-                      <div className="transform translate-y-3 group-hover:translate-y-0 transition-transform duration-300">
+                    {/* Semi-transparent dark overlay showing title and description on hover/tap */}
+                    <div 
+                      className={`absolute inset-0 bg-black/80 transition-all duration-300 flex flex-col justify-end p-6 select-none ${
+                        activeArtworkId === art.id
+                          ? "opacity-100 pointer-events-auto"
+                          : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
+                      }`}
+                    >
+                      <div 
+                        className={`transform transition-transform duration-300 ${
+                          activeArtworkId === art.id
+                            ? "translate-y-0"
+                            : "translate-y-3 group-hover:translate-y-0"
+                        }`}
+                      >
                         {art.title && (
                           <h3 className="text-base md:text-lg font-serif text-white mb-2 leading-snug">
                             {art.title}
