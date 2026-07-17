@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -80,6 +80,24 @@ export default function StudioDesk() {
   const { setPaletteFromColor, resetPalette } = usePalette();
   const deskRef = useRef<HTMLDivElement | null>(null);
 
+  // Track scaling factor for the skew-morphic desk layout
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (typeof window !== "undefined") {
+        const width = window.innerWidth;
+        // Use full viewport width minus side paddings for scaling computation (up to 1100px)
+        const containerWidth = Math.min(width - 32, 1100);
+        setScale(containerWidth / 1100);
+      }
+    };
+    
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Colors on the palette
   const paletteColors = [
     { name: "Gold Dust", hex: "#e0a96d", bg: "bg-[#e0a96d]" },
@@ -110,12 +128,16 @@ export default function StudioDesk() {
       </motion.div>
 
       {/* Desk Wrapper with scale responsive transform */}
-      <div className="w-full max-w-[1100px] h-[550px] md:h-[650px] relative z-20 pointer-events-auto flex items-center justify-center">
+      <div 
+        className="w-full max-w-[1100px] relative z-20 pointer-events-auto flex items-center justify-center overflow-hidden transition-all duration-300"
+        style={{ height: `${650 * scale}px` }}
+      >
         
         {/* The Desk Surface container */}
         <div 
           ref={deskRef} 
-          className="w-full h-full relative scale-[0.68] sm:scale-[0.85] md:scale-100 transition-transform duration-500 origin-center"
+          className="w-[1100px] h-[650px] relative transition-transform duration-500 origin-center shrink-0"
+          style={{ transform: `scale(${scale})` }}
         >
           
           {/* 1. Canvas Frame (Gallery Route) */}

@@ -38,8 +38,8 @@ export default function Navbar() {
           
           {/* Logo Section - Generic Template logo */}
           <Link href="/" className="flex items-center gap-1.5 group cursor-pointer">
-            <span className="text-xl md:text-2xl font-serif text-[#f4edd2] tracking-wide group-hover:text-accent transition-colors duration-300">
-              Life of Ritik <span className="font-sans text-xs text-white/50 lowercase">| Artworks</span>
+            <span className="text-lg sm:text-xl md:text-2xl font-serif text-[#f4edd2] tracking-wide group-hover:text-accent transition-colors duration-300">
+              Life of Ritik <span className="font-sans text-xs text-white/50 lowercase hidden sm:inline-block">| Artworks</span>
             </span>
             <Paintbrush className="w-3.5 h-3.5 text-accent animate-pulse" />
           </Link>

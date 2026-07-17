@@ -467,7 +467,7 @@ export default function Home() {
       {/* SECTION 1: HERO LANDING PAGE - Editorial split grid */}
       <section 
         id="home"
-        className="min-h-screen flex items-center relative z-25 px-6 md:px-12 select-none py-24 max-w-[92vw] xl:max-w-[85vw] mx-auto w-full"
+        className="min-h-screen flex items-center relative z-25 px-4 sm:px-6 md:px-12 select-none py-20 md:py-24 max-w-[92vw] xl:max-w-[85vw] mx-auto w-full"
       >
         <div className="editorial-grid gap-16 items-center w-full">
           
@@ -559,7 +559,7 @@ export default function Home() {
                   x: useTransform(springX, (x) => x * 0.7),
                   y: useTransform(springY, (y) => y * 0.7),
                 }}
-                className="absolute left-0 top-[10%] w-[210px] aspect-[3/4] z-10 animate-float-slow"
+                className="absolute left-0 top-[10%] w-[160px] sm:w-[210px] aspect-[3/4] z-10 animate-float-slow"
               >
                 <div className="museum-frame w-full h-full transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
                   <div className="museum-mat w-full h-full">
@@ -582,7 +582,7 @@ export default function Home() {
                   x: useTransform(springX, (x) => x * -1.2),
                   y: useTransform(springY, (y) => y * -1.2),
                 }}
-                className="absolute right-0 bottom-[10%] w-[250px] aspect-[3/4] z-20 animate-float-reverse"
+                className="absolute right-0 bottom-[10%] w-[200px] sm:w-[250px] aspect-[3/4] z-20 animate-float-reverse"
               >
                 <div className="museum-frame w-full h-full luxury-shadow-accent transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
                   <div className="museum-mat w-full h-full">
@@ -620,7 +620,7 @@ export default function Home() {
       {/* SECTION 2: ABOUT SECTION */}
       <section 
         id="about" 
-        className="py-32 px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-20 border-t border-white/5 bg-black/25"
+        className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-20 border-t border-white/5 bg-black/25"
       >
         <div className="mb-16">
           <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-accent font-sans block mb-1">Biography</span>
@@ -747,7 +747,7 @@ export default function Home() {
       {/* SECTION 3: GALLERY SECTION */}
       <section 
         id="gallery" 
-        className="py-32 px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-25 border-t border-white/5 bg-black/10"
+        className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-25 border-t border-white/5 bg-black/10"
       >
         <div className="mb-12 flex flex-col items-start w-full">
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-accent font-sans block mb-1">WORKS</span>
@@ -849,7 +849,7 @@ export default function Home() {
       {/* SECTION: CUSTOMER FEEDBACK SHOWCASE */}
       <section 
         id="testimonials" 
-        className="py-32 px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-25 border-t border-white/5 bg-black/5"
+        className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-25 border-t border-white/5 bg-black/5"
       >
         <div className="mb-16">
           <span className="text-xs font-semibold uppercase tracking-[0.25em] text-accent font-sans block mb-1">REVIEWS</span>
@@ -900,7 +900,7 @@ export default function Home() {
       {/* SECTION 4: CONTACT SECTION */}
       <section 
         id="contact" 
-        className="py-32 px-6 md:px-12 flex flex-col max-w-[92vw] md:max-w-[70vw] xl:max-w-[55vw] mx-auto w-full relative z-20 border-t border-white/5 bg-black/20"
+        className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] md:max-w-[70vw] xl:max-w-[55vw] mx-auto w-full relative z-20 border-t border-white/5 bg-black/20"
       >
         <div className="mb-16">
           <span className="text-[10px] md:text-xs uppercase tracking-[0.2em] text-accent font-sans block mb-1">Contact</span>
