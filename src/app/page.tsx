@@ -829,7 +829,7 @@ export default function Home() {
                       e.stopPropagation();
                       setActiveArtworkId(activeArtworkId === art.id ? null : art.id);
                     }}
-                    className="gallery-card relative aspect-[3/4] overflow-hidden bg-shimmer border border-white/5 group cursor-pointer"
+                    className="gallery-card relative aspect-[3/4] overflow-hidden bg-shimmer border border-white/5 group cursor-pointer transition-all duration-500 hover:shadow-[0_20px_45px_rgba(0,0,0,0.6)] hover:border-white/15"
                   >
                     <Image
                       src={art.finalImageUrl}
@@ -841,7 +841,7 @@ export default function Home() {
 
                     {/* Semi-transparent dark overlay showing title and description on hover/tap */}
                     <div
-                      className={`absolute inset-0 bg-transparent transition-all duration-300 flex flex-col justify-end p-6 select-none ${activeArtworkId === art.id
+                      className={`absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent transition-all duration-300 flex flex-col justify-end p-6 select-none ${activeArtworkId === art.id
                           ? "opacity-100 pointer-events-auto"
                           : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
                         }`}
