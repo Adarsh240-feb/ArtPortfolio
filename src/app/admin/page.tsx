@@ -203,20 +203,15 @@ export default function AdminPage() {
     }
   }, []);
 
-  // Fetch data dynamically based on active tab when tab shifts or on login
+  // Fetch all dashboard datasets on login to populate notification badges and cache tables
   useEffect(() => {
     if (user || isLoggedInDemo) {
-      if (activeTab === "inquiries") {
-        loadInquiries();
-      } else if (activeTab === "feedback") {
-        loadTestimonials();
-      } else if (activeTab === "upload") {
-        loadArtworks();
-      } else if (activeTab === "about") {
-        loadAboutSettings();
-      }
+      loadInquiries();
+      loadTestimonials();
+      loadArtworks();
+      loadAboutSettings();
     }
-  }, [user, isLoggedInDemo, activeTab]);
+  }, [user, isLoggedInDemo]);
 
   const loadInquiries = async () => {
     setInquiriesLoading(true);
