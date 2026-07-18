@@ -8,20 +8,20 @@ import { collection, getDocs, orderBy, query, addDoc, serverTimestamp, doc, getD
 import { db } from "@/lib/firebase";
 import { usePalette } from "@/context/PaletteContext";
 import WipSlider from "@/components/gallery/WipSlider";
-import { 
-  ArrowRight, 
-  ChevronDown, 
-  Sparkles, 
+import {
+  ArrowRight,
+  ChevronDown,
+  Sparkles,
   Paintbrush,
-  X, 
-  ShoppingBag, 
-  Eye, 
-  Calendar, 
-  Feather, 
-  Heart, 
+  X,
+  ShoppingBag,
+  Eye,
+  Calendar,
+  Feather,
+  Heart,
   BookOpen,
-  Send, 
-  Pencil, 
+  Send,
+  Pencil,
   CheckCircle,
   Award,
   Users,
@@ -78,9 +78,8 @@ function AtmosphereController() {
               <button
                 key={preset.hex}
                 onClick={() => setPaletteFromColor(preset.hex)}
-                className={`w-6 h-6 rounded-full cursor-pointer transition-transform hover:scale-125 duration-200 border ${
-                  accentColor === preset.hex ? "border-white scale-110" : "border-white/10"
-                } ${preset.color}`}
+                className={`w-6 h-6 rounded-full cursor-pointer transition-transform hover:scale-125 duration-200 border ${accentColor === preset.hex ? "border-white scale-110" : "border-white/10"
+                  } ${preset.color}`}
                 title={preset.name}
               />
             ))}
@@ -151,7 +150,7 @@ const MOCK_ARTWORKS: Artwork[] = [];
 export default function Home() {
   const router = useRouter();
   const { setPaletteFromColor, resetPalette } = usePalette();
-  
+
   // Gallery state
   const [artworks, setArtworks] = useState<Artwork[]>(MOCK_ARTWORKS);
   const [galleryLoading, setGalleryLoading] = useState(true);
@@ -180,7 +179,7 @@ export default function Home() {
   // Motion values for subtle background hover parallax drift
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  
+
   const springX = useSpring(mouseX, { stiffness: 45, damping: 15 });
   const springY = useSpring(mouseY, { stiffness: 45, damping: 15 });
 
@@ -212,8 +211,8 @@ export default function Home() {
   // Load artworks from Firestore
   useEffect(() => {
     async function loadArtworks() {
-      const hasFirebaseConfig = 
-        process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
+      const hasFirebaseConfig =
+        process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
         process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
       if (!hasFirebaseConfig) {
@@ -241,7 +240,7 @@ export default function Home() {
           id: doc.id,
           ...doc.data()
         })) as Artwork[];
-        
+
         setArtworks(docs);
       } catch (e) {
         console.warn("Firestore not configured, using offline mock data.");
@@ -256,8 +255,8 @@ export default function Home() {
   // Load testimonials from Firestore or LocalStorage sandbox
   useEffect(() => {
     async function loadTestimonials() {
-      const hasFirebaseConfig = 
-        process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
+      const hasFirebaseConfig =
+        process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
         process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
       if (!hasFirebaseConfig) {
@@ -284,7 +283,7 @@ export default function Home() {
           id: doc.id,
           ...doc.data()
         })) as Testimonial[];
-        
+
         if (docs.length > 0) {
           setTestimonialList([...docs, ...MOCK_TESTIMONIALS]);
         }
@@ -298,8 +297,8 @@ export default function Home() {
   // Load About Settings from Firestore
   useEffect(() => {
     async function loadAboutSettings() {
-      const hasFirebaseConfig = 
-        process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
+      const hasFirebaseConfig =
+        process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
         process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
       if (!hasFirebaseConfig) {
@@ -335,8 +334,8 @@ export default function Home() {
     setContactLoading(true);
     setContactError("");
 
-    const hasFirebaseConfig = 
-      process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
+    const hasFirebaseConfig =
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
       process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
 
     const saveLocally = () => {
@@ -396,7 +395,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col relative w-full overflow-x-hidden min-h-screen">
-      
+
       {/* Dynamic Realistic Photo Background with Subtle Parallax Shift */}
       <div className="fixed inset-0 z-10 pointer-events-none w-full h-full overflow-hidden bg-[#050608]">
         <motion.div
@@ -416,18 +415,18 @@ export default function Home() {
             className="object-cover opacity-[0.26] mix-blend-color-dodge md:opacity-[0.22] pointer-events-none"
           />
         </motion.div>
-        
+
         {/* Soft radial overlay to ensure readability */}
         <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/45 to-black/90" />
       </div>
 
       {/* SECTION 1: HERO LANDING PAGE - Editorial split grid */}
-      <section 
+      <section
         id="home"
         className="min-h-screen flex items-center relative z-25 px-4 sm:px-6 md:px-12 select-none py-20 md:py-24 max-w-[92vw] xl:max-w-[85vw] mx-auto w-full"
       >
         <div className="editorial-grid gap-16 items-center w-full">
-          
+
           {/* Left Column: Typography, Narrative and Actions */}
           <div className="flex flex-col text-left justify-center space-y-8 z-30">
             {/* Tagline */}
@@ -509,7 +508,7 @@ export default function Home() {
 
             {/* Anchored inner container box to prevent relative layout drifting far apart on wide screens */}
             <div className="relative w-full max-w-[440px] h-full flex items-center justify-center">
-              
+
               {/* Frame 1 Wrapper: Load Drop & Swing Animation */}
               <motion.div
                 initial={{ y: -700, rotate: -30, opacity: 0 }}
@@ -602,7 +601,7 @@ export default function Home() {
         </div>
 
         {/* Scroll Indicator */}
-        <motion.div 
+        <motion.div
           onClick={() => scrollToSection("about")}
           className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer text-[10px] uppercase tracking-[0.25em] text-white/40 hover:text-accent transition-colors duration-300 group z-30"
           animate={{ y: [0, 6, 0] }}
@@ -614,8 +613,8 @@ export default function Home() {
       </section>
 
       {/* SECTION 2: ABOUT SECTION */}
-      <section 
-        id="about" 
+      <section
+        id="about"
         className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-20 border-t border-white/5 bg-black/25"
       >
         <div className="mb-16">
@@ -640,7 +639,7 @@ export default function Home() {
               <Feather className="w-4 h-4" />
               <span>Philosophical Statement</span>
             </div>
-            
+
             <h3 className="text-3xl md:text-4xl font-serif text-white font-light leading-tight">
               {aboutData?.title || "Translating Devotion and Emotion into Fine Graphite Lines"}
             </h3>
@@ -750,8 +749,8 @@ export default function Home() {
       </section>
 
       {/* SECTION 3: GALLERY SECTION */}
-      <section 
-        id="gallery" 
+      <section
+        id="gallery"
         className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-25 border-t border-white/5 bg-black/10"
       >
         <div className="mb-12 flex flex-col items-start w-full">
@@ -760,18 +759,17 @@ export default function Home() {
             <h2 className="text-4xl md:text-6xl font-serif font-light text-white tracking-wide">The Gallery</h2>
             <div className="w-2 h-2 rounded-full bg-accent animate-pulse mt-3 md:mt-4" />
           </div>
-          
+
           {/* Category Tabs Scroll Wrapper */}
           <div className="flex flex-wrap gap-3.5 mb-8 w-full">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-5 py-2.5 border text-[10px] font-semibold uppercase tracking-[0.15em] transition-all duration-300 cursor-pointer ${
-                  activeCategory === cat.id
+                className={`px-5 py-2.5 border text-[10px] font-semibold uppercase tracking-[0.15em] transition-all duration-300 cursor-pointer ${activeCategory === cat.id
                     ? "bg-[#dfae6f] border-[#dfae6f] text-black shadow-lg shadow-accent/15"
                     : "bg-transparent border-white/10 text-white/60 hover:text-white hover:border-white/20"
-                }`}
+                  }`}
               >
                 {cat.name}
               </button>
@@ -801,7 +799,7 @@ export default function Home() {
                   onMouseEnter={() => setPaletteFromColor(art.dominantColor)}
                   onMouseLeave={resetPalette}
                 >
-                  <div 
+                  <div
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveArtworkId(activeArtworkId === art.id ? null : art.id);
@@ -817,19 +815,17 @@ export default function Home() {
                     />
 
                     {/* Semi-transparent dark overlay showing title and description on hover/tap */}
-                    <div 
-                      className={`absolute inset-0 bg-transparent transition-all duration-300 flex flex-col justify-end p-6 select-none ${
-                        activeArtworkId === art.id
+                    <div
+                      className={`absolute inset-0 bg-transparent transition-all duration-300 flex flex-col justify-end p-6 select-none ${activeArtworkId === art.id
                           ? "opacity-100 pointer-events-auto"
                           : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
-                      }`}
+                        }`}
                     >
-                      <div 
-                        className={`transform transition-transform duration-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] ${
-                          activeArtworkId === art.id
+                      <div
+                        className={`transform transition-transform duration-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] ${activeArtworkId === art.id
                             ? "translate-y-0"
                             : "translate-y-3 group-hover:translate-y-0"
-                        }`}
+                          }`}
                       >
                         {art.title && (
                           <h3 className="text-base md:text-lg font-serif text-white mb-2 leading-snug">
@@ -852,8 +848,8 @@ export default function Home() {
       </section>
 
       {/* SECTION: CUSTOMER FEEDBACK SHOWCASE */}
-      <section 
-        id="testimonials" 
+      <section
+        id="testimonials"
         className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] xl:max-w-[85vw] mx-auto w-full relative z-25 border-t border-white/5 bg-black/5"
       >
         <div className="mb-16">
@@ -887,8 +883,8 @@ export default function Home() {
       </section>
 
       {/* SECTION 4: CONTACT SECTION */}
-      <section 
-        id="contact" 
+      <section
+        id="contact"
         className="py-20 md:py-32 px-4 sm:px-6 md:px-12 flex flex-col max-w-[92vw] md:max-w-[70vw] xl:max-w-[55vw] mx-auto w-full relative z-20 border-t border-white/5 bg-black/20"
       >
         <div className="mb-16">
@@ -899,7 +895,7 @@ export default function Home() {
         <div className="flex-1 flex items-center justify-center">
           <AnimatePresence mode="wait">
             {!contactSubmitted ? (
-              <motion.div 
+              <motion.div
                 key="contact-sheet"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -908,7 +904,7 @@ export default function Home() {
                 className="w-full bg-[#faf6ee] rounded-xl shadow-2xl border border-amber-950/10 p-8 md:p-12 text-neutral-800 relative overflow-hidden"
               >
                 <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[linear-gradient(rgba(0,0,0,1)_1px,transparent_1px)] bg-[size:100%_2rem]" />
-                
+
                 <div className="relative z-10">
                   <div className="flex items-center gap-2 mb-8 text-neutral-500 text-xs md:text-sm uppercase tracking-wider font-sans">
                     <Pencil className="w-4 h-4 text-accent" />
@@ -1002,7 +998,7 @@ export default function Home() {
                 </div>
               </motion.div>
             ) : (
-              <motion.div 
+              <motion.div
                 key="contact-success"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -1066,7 +1062,7 @@ export default function Home() {
 
           {/* Curator Portal link */}
           <div className="flex items-center justify-end">
-            <button 
+            <button
               onClick={() => router.push("/admin")}
               className="hover:text-accent font-sans text-xs transition-colors cursor-pointer border border-white/10 hover:border-accent/40 rounded px-3.5 py-2 bg-white/2 hover:bg-white/5"
             >

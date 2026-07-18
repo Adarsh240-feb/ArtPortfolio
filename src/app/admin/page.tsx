@@ -419,7 +419,7 @@ export default function AdminPage() {
         await setPersistence(auth, browserSessionPersistence);
         await signInWithEmailAndPassword(auth, email, password);
       } catch (err: any) {
-        setErrorMessage(err.message || "Failed to sign in. Verify credentials.");
+        setErrorMessage("Not an authorized user.");
       }
     }
   };
