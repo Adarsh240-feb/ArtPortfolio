@@ -11,8 +11,8 @@ interface PaletteContextType {
 const PaletteContext = createContext<PaletteContextType | undefined>(undefined);
 
 const DEFAULT_ACCENT = "#dfae6f"; // Warm Champagne/Bronze
-const DEFAULT_BG_START = "#141210"; // Warm Sepia Charcoal
-const DEFAULT_BG_END = "#0a0908"; // Deepest Espresso Charcoal
+const DEFAULT_BG_START = "#23201d"; // Softer warm charcoal (15% lightness)
+const DEFAULT_BG_END = "#161412"; // Deep warm charcoal (9% lightness)
 
 export function PaletteProvider({ children }: { children: ReactNode }) {
   const [accentColor, setAccentColor] = useState(DEFAULT_ACCENT);
@@ -83,10 +83,10 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
       
       // Compute vibrant accent (high saturation and medium lightness)
       const accent = hslToHex(h, Math.max(s, 75), Math.max(l, 55));
-      // Dark background start using the hue
-      const bgStart = hslToHex(h, Math.min(s, 22), 8);
-      // Darker background end
-      const bgEnd = hslToHex(h, Math.min(s, 14), 3);
+      // Softer dark background start using the hue (15% lightness)
+      const bgStart = hslToHex(h, Math.min(s, 22), 15);
+      // Softer dark background end (9% lightness)
+      const bgEnd = hslToHex(h, Math.min(s, 14), 9);
 
       setAccentColor(accent);
 

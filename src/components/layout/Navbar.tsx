@@ -68,6 +68,7 @@ export default function Navbar() {
               <span>Commission</span>
               <ArrowRight className="w-3 h-3" />
             </a>
+
           </div>
 
           {/* Mobile Menu Trigger */}
@@ -128,6 +129,7 @@ export default function Navbar() {
               >
                 Inquire Commission
               </a>
+
             </div>
           </motion.div>
         )}

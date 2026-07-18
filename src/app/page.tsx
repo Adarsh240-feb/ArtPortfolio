@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { collection, getDocs, orderBy, query, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { usePalette } from "@/context/PaletteContext";
 import WipSlider from "@/components/gallery/WipSlider";
@@ -120,35 +120,21 @@ interface Artwork {
 
 interface Testimonial {
   id: string;
-  clientName: string;
-  clientSubtitle: string;
-  message: string;
-  rating: number;
+  screenshotUrl: string;
+  createdAt?: any;
 }
 
-const MOCK_TESTIMONIALS: Testimonial[] = [
-  {
-    id: "t-1",
-    clientName: "Adarsh Sharma",
-    clientSubtitle: "Custom Devotional Drawing Collector",
-    message: "Ritik created an amazing Bal Gopal pencil sketch for my home mandir. The eyes are so real and full of peace. The details of the crown and flute are exceptionally fine. Highly recommended!",
-    rating: 5,
-  },
-  {
-    id: "t-2",
-    clientName: "Priya Patel",
-    clientSubtitle: "Realistic Portrait Client",
-    message: "I ordered a charcoal portrait sketch for my grandmother's birthday. She was moved to tears when she saw it! Ritik captured her smile and character beautifully. Outstanding craftsmanship.",
-    rating: 5,
-  },
-  {
-    id: "t-3",
-    clientName: "Rohan Verma",
-    clientSubtitle: "Radha Krishna sketch Collector",
-    message: "I am amazed by the blending work and contrast in the Radha Krishna sketch. The addition of gold highlights makes it look incredibly rich and premium. Truly a centerpiece for my living room.",
-    rating: 5,
-  },
-];
+interface AboutData {
+  imageUrl: string;
+  title: string;
+  paragraph1: string;
+  paragraph2: string;
+  quote: string;
+  heroLeftImageUrl?: string;
+  heroRightImageUrl?: string;
+}
+
+const MOCK_TESTIMONIALS: Testimonial[] = [];
 
 const CATEGORIES = [
   { id: "all", name: "ALL" },
@@ -279,6 +265,7 @@ export default function Home() {
   // Track active artwork ID for touch/mobile devices to toggle information overlay
   const [activeArtworkId, setActiveArtworkId] = useState<string | null>(null);
   const [testimonials, setTestimonialList] = useState<Testimonial[]>(MOCK_TESTIMONIALS);
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
 
   const filteredArtworks = activeCategory === "all"
     ? artworks
@@ -336,6 +323,17 @@ export default function Home() {
 
       if (!hasFirebaseConfig) {
         console.log("No Firebase config detected, loading mock data instantly.");
+        const savedDemo = localStorage.getItem("demo_gallery");
+        if (savedDemo) {
+          try {
+            const parsed = JSON.parse(savedDemo) as Artwork[];
+            if (parsed.length > 0) {
+              setArtworks([...parsed, ...MOCK_ARTWORKS]);
+            }
+          } catch (e) {
+            console.warn("Error parsing demo gallery", e);
+          }
+        }
         setGalleryLoading(false);
         return;
       }
@@ -402,6 +400,37 @@ export default function Home() {
     loadTestimonials();
   }, []);
 
+  // Load About Settings from Firestore
+  useEffect(() => {
+    async function loadAboutSettings() {
+      const hasFirebaseConfig = 
+        process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
+        process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
+      if (!hasFirebaseConfig) {
+        const savedDemo = localStorage.getItem("demo_about");
+        if (savedDemo) {
+          try {
+            setAboutData(JSON.parse(savedDemo) as AboutData);
+          } catch (e) {
+            console.warn("Error parsing demo about settings", e);
+          }
+        }
+        return;
+      }
+
+      try {
+        const docSnap = await getDoc(doc(db, "settings", "about"));
+        if (docSnap.exists()) {
+          setAboutData(docSnap.data() as AboutData);
+        }
+      } catch (e) {
+        console.warn("Firestore settings document not configured or empty.", e);
+      }
+    }
+    loadAboutSettings();
+  }, []);
+
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!contactData.name || !contactData.email || !contactData.message) {
@@ -411,6 +440,35 @@ export default function Home() {
     setContactLoading(true);
     setContactError("");
 
+    const hasFirebaseConfig = 
+      process.env.NEXT_PUBLIC_FIREBASE_API_KEY && 
+      process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+
+    const saveLocally = () => {
+      try {
+        const newInquiry = {
+          id: `demo-inq-${Date.now()}`,
+          name: contactData.name,
+          email: contactData.email,
+          subject: contactData.subject || "",
+          message: contactData.message,
+          createdAt: { seconds: Math.floor(Date.now() / 1000) }
+        };
+        const saved = localStorage.getItem("demo_inquiries");
+        const current = saved ? JSON.parse(saved) : [];
+        localStorage.setItem("demo_inquiries", JSON.stringify([newInquiry, ...current]));
+      } catch (err) {
+        console.warn("Failed to save inquiry to local storage:", err);
+      }
+    };
+
+    if (!hasFirebaseConfig) {
+      saveLocally();
+      setContactSubmitted(true);
+      setContactLoading(false);
+      return;
+    }
+
     try {
       await addDoc(collection(db, "inquiries"), {
         ...contactData,
@@ -419,6 +477,7 @@ export default function Home() {
       setContactSubmitted(true);
     } catch (err) {
       console.warn("Firestore save failed, submitting locally:", err);
+      saveLocally();
       setContactSubmitted(true);
     } finally {
       setContactLoading(false);
@@ -565,11 +624,12 @@ export default function Home() {
                   <div className="museum-mat w-full h-full">
                     <div className="relative w-full h-full overflow-hidden">
                       <Image
-                        src="/sketchbook_cover.png"
+                        src={aboutData?.heroLeftImageUrl || "/sketchbook_cover.png"}
                         alt="Artist Sketch Draft"
                         fill
                         sizes="210px"
                         className="object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-500"
+                        unoptimized
                       />
                     </div>
                   </div>
@@ -588,12 +648,13 @@ export default function Home() {
                   <div className="museum-mat w-full h-full">
                     <div className="relative w-full h-full overflow-hidden">
                       <Image
-                        src="/canvas_art.png"
+                        src={aboutData?.heroRightImageUrl || "/canvas_art.png"}
                         alt="Bal Gopal Portrait"
                         fill
                         sizes="250px"
                         priority
                         className="object-cover"
+                        unoptimized
                       />
                     </div>
                   </div>
@@ -630,8 +691,8 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center mb-24">
           <div className="lg:col-span-5 w-full aspect-[3/4] relative rounded-xl overflow-hidden bg-neutral-900 border border-white/10 shadow-2xl">
             <Image
-              src="/canvas_art.png"
-              alt="Artist Portrait placeholder"
+              src={aboutData?.imageUrl || "/canvas_art.png"}
+              alt="Artist Portrait"
               fill
               sizes="(max-width: 1024px) 100vw, 550px"
               className="object-cover opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700"
@@ -646,18 +707,18 @@ export default function Home() {
             </div>
             
             <h3 className="text-3xl md:text-4xl font-serif text-white font-light leading-tight">
-              Translating Devotion and Emotion into Fine Graphite Lines
+              {aboutData?.title || "Translating Devotion and Emotion into Fine Graphite Lines"}
             </h3>
 
             <div className="space-y-6 text-sm md:text-base text-white/70 leading-relaxed font-sans font-light">
               <p>
-                My practice bridges realism and spiritual devotion. Working primarily with graphite pencils, charcoal powders, and fine shading techniques, I explore the depth of human emotion through realistic portraits and spiritual themes.
+                {aboutData?.paragraph1 || "My practice bridges realism and spiritual devotion. Working primarily with graphite pencils, charcoal powders, and fine shading techniques, I explore the depth of human emotion through realistic portraits and spiritual themes."}
               </p>
               <p>
-                Each drawing begins with a careful study of light, shadow, and proportion. For devotional art like Bal Gopal or Radha Krishna, the goal is to capture a sense of purity and serene grace. The technical precision of pencil strokes serves to bring spiritual stories to life.
+                {aboutData?.paragraph2 || "Each drawing begins with a careful study of light, shadow, and proportion. For devotional art like Bal Gopal or Radha Krishna, the goal is to capture a sense of purity and serene grace. The technical precision of pencil strokes serves to bring spiritual stories to life."}
               </p>
               <blockquote className="border-l-2 border-accent pl-5 italic text-white/60 font-serif my-6 text-base leading-relaxed">
-                &ldquo;An artist doesn't just draw what he sees, but what he feels in his heart when the pencil touches the paper.&rdquo;
+                &ldquo;{aboutData?.quote || "An artist doesn't just draw what he sees, but what he feels in his heart when the pencil touches the paper."}&rdquo;
               </blockquote>
             </div>
 
@@ -813,14 +874,14 @@ export default function Home() {
 
                     {/* Semi-transparent dark overlay showing title and description on hover/tap */}
                     <div 
-                      className={`absolute inset-0 bg-black/80 transition-all duration-300 flex flex-col justify-end p-6 select-none ${
+                      className={`absolute inset-0 bg-transparent transition-all duration-300 flex flex-col justify-end p-6 select-none ${
                         activeArtworkId === art.id
                           ? "opacity-100 pointer-events-auto"
                           : "opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto"
                       }`}
                     >
                       <div 
-                        className={`transform transition-transform duration-300 ${
+                        className={`transform transition-transform duration-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] ${
                           activeArtworkId === art.id
                             ? "translate-y-0"
                             : "translate-y-3 group-hover:translate-y-0"
@@ -859,42 +920,24 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">
-          {testimonials.map((t) => (
-            <motion.div
-              key={t.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="p-8 rounded-lg border border-white/5 bg-white/2 hover:bg-white/4 transition-all duration-300 flex flex-col justify-between"
-            >
-              <div>
-                {/* Star Ratings */}
-                <div className="flex gap-1.5 text-accent mb-6">
-                  {Array.from({ length: t.rating || 5 }).map((_, i) => (
-                    <span key={i} className="text-sm">★</span>
-                  ))}
-                </div>
-                
-                {/* Message */}
-                <p className="text-sm text-white/70 leading-relaxed font-sans font-light italic mb-6">
-                  &quot;{t.message}&quot;
-                </p>
-              </div>
-
-              {/* Collector Details */}
-              <div className="border-t border-white/5 pt-4">
-                <span className="text-xs font-semibold text-white/95 block font-sans">
-                  {t.clientName}
-                </span>
-                <span className="text-[10px] text-white/40 block font-sans mt-0.5">
-                  {t.clientSubtitle}
-                </span>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {testimonials.length === 0 ? (
+          <div className="py-16 text-center text-white/30 font-sans font-light text-xs tracking-widest uppercase border border-dashed border-white/10 rounded-lg bg-white/2">
+            No collector stories published yet.
+          </div>
+        ) : (
+          <div className="relative w-full overflow-hidden mask-fade-edges py-4">
+            <div className="animate-marquee flex gap-6">
+              {[...testimonials, ...testimonials, ...testimonials, ...testimonials].map((t, idx) => (
+                <img
+                  key={`${t.id}-${idx}`}
+                  src={t.screenshotUrl}
+                  alt="Collector Review Screenshot"
+                  className="h-[200px] sm:h-[260px] w-auto object-contain rounded-xl border border-white/5 bg-neutral-950/80 shadow-2xl p-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-115 hover:z-50 hover:border-accent/45 hover:shadow-[0_30px_60px_rgba(0,0,0,0.9),0_0_20px_rgba(223,174,111,0.25)] flex-shrink-0 cursor-pointer"
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       {/* SECTION 4: CONTACT SECTION */}

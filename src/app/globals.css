@@ -19,8 +19,8 @@
 }
 
 :root {
-  --bg-gradient-start: #141210;
-  --bg-gradient-end: #0a0908;
+  --bg-gradient-start: #23201d;
+  --bg-gradient-end: #161412;
   --accent-color: #dfae6f;
   --accent-color-rgb: 223, 174, 111;
   
@@ -219,3 +219,27 @@ body {
   }
 }
 
+/* INFINITE MARQUEE ANIMATION */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 35s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+.mask-fade-edges {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
