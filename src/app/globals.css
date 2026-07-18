@@ -243,3 +243,19 @@ body {
   mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
+
+/* LUXURY SHIMMER SKELETON EFFECT */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.bg-shimmer {
+  background: linear-gradient(90deg, #100f0e 25%, #1d1b1a 50%, #100f0e 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite linear;
+}

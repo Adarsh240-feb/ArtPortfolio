@@ -146,112 +146,7 @@ const CATEGORIES = [
   { id: "achievements", name: "ACHIEVEMENTS" },
 ];
 
-const MOCK_ARTWORKS: Artwork[] = [
-  {
-    id: "mock-1",
-    title: "Divine Flute (Bal Gopal)",
-    medium: "Graphite & Charcoal on Archival Paper",
-    dimensions: "12 x 16 inches",
-    year: 2026,
-    description: "A serene devotional pencil drawing portraying Lord Krishna as a child (Bal Gopal) holding his flute. Focuses on capturing peaceful, lifelike eyes and highly detailed crown patterns.",
-    finalImageUrl: "/canvas_art.png",
-    dominantColor: "#dfae6f",
-    wipSteps: ["/sketchbook_cover.png", "/envelope_cover.png", "/canvas_art.png"],
-    available: true,
-    category: "charcoal-sketches",
-  },
-  {
-    id: "mock-2",
-    title: "Radha Krishna Union",
-    medium: "Graphite, Charcoal & Gold Pen Highlights on Paper",
-    dimensions: "16 x 20 inches",
-    year: 2026,
-    description: "A highly detailed portrait sketch of Radha and Krishna, representing divine love and unity. Created using multiple blending stumps for soft skin tones and fine-point pencils for hair texture.",
-    finalImageUrl: "/gallery_art_2.png",
-    dominantColor: "#ae2012",
-    wipSteps: ["/sketchbook_cover.png", "/envelope_cover.png", "/gallery_art_2.png"],
-    available: false,
-    category: "charcoal-sketches",
-  },
-  {
-    id: "mock-3",
-    title: "Lord Ganesha in Dhyana",
-    medium: "Charcoal Dust & Graphite on Card Stock",
-    dimensions: "14 x 18 inches",
-    year: 2025,
-    description: "A deep, high-contrast charcoal study of Lord Ganesha in deep meditation. Uses charcoal dust washes for background gradients, allowing the sharp graphite lines of the deity to stand out.",
-    finalImageUrl: "/gallery_art_3.png",
-    dominantColor: "#1b4332",
-    wipSteps: ["/sketchbook_cover.png", "/envelope_cover.png", "/gallery_art_3.png"],
-    available: true,
-    category: "charcoal-sketches",
-  },
-  {
-    id: "mock-4",
-    title: "Vasant Custom Portrait",
-    medium: "Acrylic on Stretched Canvas",
-    dimensions: "18 x 24 inches",
-    year: 2026,
-    description: "A customized portrait painting showcasing fine details, vibrant skin tones, and rich floral background textures.",
-    finalImageUrl: "/canvas_art.png",
-    dominantColor: "#dfae6f",
-    wipSteps: [],
-    available: true,
-    category: "acrylic-custom-portraits",
-  },
-  {
-    id: "mock-5",
-    title: "Elysian Woods",
-    medium: "Acrylic Heavy Body on Linen Canvas",
-    dimensions: "24 x 30 inches",
-    year: 2025,
-    description: "An impressionistic exploration of forest light patterns and thick acrylic textures created using palette knives.",
-    finalImageUrl: "/gallery_art_2.png",
-    dominantColor: "#ae2012",
-    wipSteps: [],
-    available: true,
-    category: "acrylic-paintings",
-  },
-  {
-    id: "mock-6",
-    title: "Handmade Terracotta Plate",
-    medium: "Clay Paint & Glaze Crafts",
-    dimensions: "12 inch diameter",
-    year: 2026,
-    description: "A hand-carved traditional clay plate, featuring intricate folklore patterns painted with acrylic glazes.",
-    finalImageUrl: "/gallery_art_3.png",
-    dominantColor: "#1b4332",
-    wipSteps: [],
-    available: true,
-    category: "crafts",
-  },
-  {
-    id: "mock-7",
-    title: "Portrait of Legend",
-    medium: "Digital & Pencil Illustration Study",
-    dimensions: "A3 Archival Paper",
-    year: 2026,
-    description: "A sketch illustration celebrating a famous public personality, emphasizing high-contrast features and realism.",
-    finalImageUrl: "/canvas_art.png",
-    dominantColor: "#dfae6f",
-    wipSteps: [],
-    available: false,
-    category: "celebs-illustrations",
-  },
-  {
-    id: "mock-8",
-    title: "Best Young Illustrator Award",
-    medium: "Atelier Recognition",
-    dimensions: "National Curation",
-    year: 2025,
-    description: "Awarded first place in regional curate showcase for outstanding graphite realism and devotional illustration series.",
-    finalImageUrl: "/gallery_art_2.png",
-    dominantColor: "#ae2012",
-    wipSteps: [],
-    available: false,
-    category: "achievements",
-  },
-];
+const MOCK_ARTWORKS: Artwork[] = [];
 
 export default function Home() {
   const router = useRouter();
@@ -327,12 +222,13 @@ export default function Home() {
         if (savedDemo) {
           try {
             const parsed = JSON.parse(savedDemo) as Artwork[];
-            if (parsed.length > 0) {
-              setArtworks([...parsed, ...MOCK_ARTWORKS]);
-            }
+            setArtworks(parsed || []);
           } catch (e) {
             console.warn("Error parsing demo gallery", e);
+            setArtworks([]);
           }
+        } else {
+          setArtworks([]);
         }
         setGalleryLoading(false);
         return;
@@ -346,11 +242,10 @@ export default function Home() {
           ...doc.data()
         })) as Artwork[];
         
-        if (docs.length > 0) {
-          setArtworks(docs);
-        }
+        setArtworks(docs);
       } catch (e) {
         console.warn("Firestore not configured, using offline mock data.");
+        setArtworks([]);
       } finally {
         setGalleryLoading(false);
       }
@@ -496,6 +391,9 @@ export default function Home() {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
+  const leftHeroSrc = aboutData?.heroLeftImageUrl || artworks[1]?.finalImageUrl || artworks[0]?.finalImageUrl;
+  const rightHeroSrc = aboutData?.heroRightImageUrl || artworks[0]?.finalImageUrl;
+
   return (
     <div className="flex flex-col relative w-full overflow-x-hidden min-h-screen">
       
@@ -605,7 +503,7 @@ export default function Home() {
           </div>
 
           {/* Right Column: Layered Parallax Museum Frame Showcase */}
-          <div className="relative h-[480px] w-full flex items-center justify-center z-20 pointer-events-auto">
+          <div className="relative h-[340px] min-[370px]:h-[400px] sm:h-[480px] w-full flex items-center justify-center z-20 pointer-events-auto">
             {/* Ambient Background Glow matching accent color */}
             <div className="absolute w-[250px] h-[250px] rounded-full bg-accent/5 filter blur-[80px] pointer-events-none" />
 
@@ -618,19 +516,25 @@ export default function Home() {
                   x: useTransform(springX, (x) => x * 0.7),
                   y: useTransform(springY, (y) => y * 0.7),
                 }}
-                className="absolute left-0 top-[10%] w-[160px] sm:w-[210px] aspect-[3/4] z-10 animate-float-slow"
+                className="absolute left-2 min-[370px]:left-0 top-[8%] w-[135px] min-[370px]:w-[170px] sm:w-[210px] aspect-[3/4] z-10 animate-float-slow"
               >
                 <div className="museum-frame w-full h-full transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
                   <div className="museum-mat w-full h-full">
-                    <div className="relative w-full h-full overflow-hidden">
-                      <Image
-                        src={aboutData?.heroLeftImageUrl || "/sketchbook_cover.png"}
-                        alt="Artist Sketch Draft"
-                        fill
-                        sizes="210px"
-                        className="object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-500"
-                        unoptimized
-                      />
+                    <div className="relative w-full h-full overflow-hidden bg-shimmer">
+                      {leftHeroSrc ? (
+                        <Image
+                          src={leftHeroSrc}
+                          alt="Artist Sketch Draft"
+                          fill
+                          sizes="(max-width: 640px) 170px, 210px"
+                          className="object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-500"
+                          priority
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-[#121110] flex items-center justify-center border border-white/5">
+                          <span className="text-[9px] uppercase tracking-widest text-[#dfae6f]/30 font-serif">Studio</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -642,20 +546,25 @@ export default function Home() {
                   x: useTransform(springX, (x) => x * -1.2),
                   y: useTransform(springY, (y) => y * -1.2),
                 }}
-                className="absolute right-0 bottom-[10%] w-[200px] sm:w-[250px] aspect-[3/4] z-20 animate-float-reverse"
+                className="absolute right-2 min-[370px]:right-0 bottom-[8%] w-[165px] min-[370px]:w-[200px] sm:w-[250px] aspect-[3/4] z-20 animate-float-reverse"
               >
                 <div className="museum-frame w-full h-full luxury-shadow-accent transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
                   <div className="museum-mat w-full h-full">
-                    <div className="relative w-full h-full overflow-hidden">
-                      <Image
-                        src={aboutData?.heroRightImageUrl || "/canvas_art.png"}
-                        alt="Bal Gopal Portrait"
-                        fill
-                        sizes="250px"
-                        priority
-                        className="object-cover"
-                        unoptimized
-                      />
+                    <div className="relative w-full h-full overflow-hidden bg-shimmer">
+                      {rightHeroSrc ? (
+                        <Image
+                          src={rightHeroSrc}
+                          alt="Bal Gopal Portrait"
+                          fill
+                          sizes="(max-width: 640px) 200px, 250px"
+                          priority
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-[#121110] flex items-center justify-center border border-white/5">
+                          <span className="text-[9px] uppercase tracking-widest text-[#dfae6f]/30 font-serif">Canvas</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -689,7 +598,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center mb-24">
-          <div className="lg:col-span-5 w-full aspect-[3/4] relative rounded-xl overflow-hidden bg-neutral-900 border border-white/10 shadow-2xl">
+          <div className="lg:col-span-5 w-full aspect-[3/4] relative rounded-xl overflow-hidden bg-shimmer border border-white/10 shadow-2xl">
             <Image
               src={aboutData?.imageUrl || "/canvas_art.png"}
               alt="Artist Portrait"
@@ -862,7 +771,7 @@ export default function Home() {
                       e.stopPropagation();
                       setActiveArtworkId(activeArtworkId === art.id ? null : art.id);
                     }}
-                    className="gallery-card relative aspect-[3/4] overflow-hidden bg-neutral-900 border border-white/5 group cursor-pointer"
+                    className="gallery-card relative aspect-[3/4] overflow-hidden bg-shimmer border border-white/5 group cursor-pointer"
                   >
                     <Image
                       src={art.finalImageUrl}

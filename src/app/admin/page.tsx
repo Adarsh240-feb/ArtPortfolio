@@ -94,7 +94,7 @@ export default function AdminPage() {
   const [dimensions, setDimensions] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [description, setDescription] = useState("");
-  const [dominantColor, setDominantColor] = useState("#d97706");
+  const [dominantColor, setDominantColor] = useState("#dfae6f");
   const [available, setAvailable] = useState(true);
   const [category, setCategory] = useState("charcoal-sketches");
   const [editingArtworkId, setEditingArtworkId] = useState<string | null>(null);
@@ -437,7 +437,7 @@ export default function AdminPage() {
     setDimensions("");
     setYear(new Date().getFullYear());
     setDescription("");
-    setDominantColor("#d97706");
+    setDominantColor("#dfae6f");
     setAvailable(true);
     setCategory("charcoal-sketches");
     setEditingFinalImageUrl("");
@@ -457,18 +457,14 @@ export default function AdminPage() {
 
     try {
       let finalUrl = editingArtworkId ? editingFinalImageUrl : "";
-      let wipUrls: string[] = [];
+      const currentDominantColor = "#dfae6f";
+      const currentWipUrls: string[] = [];
 
       if (isDemoMode) {
         if (editingArtworkId) {
           // Edit existing in Demo Mode
           if (finalImage) {
             finalUrl = URL.createObjectURL(finalImage);
-          }
-          if (wipFiles.length > 0) {
-            wipUrls = wipFiles.map((f) => URL.createObjectURL(f));
-          } else {
-            wipUrls = artworks.find((a) => a.id === editingArtworkId)?.wipSteps || [];
           }
 
           const savedGallery = localStorage.getItem("demo_gallery");
@@ -483,8 +479,8 @@ export default function AdminPage() {
                 year: Number(year),
                 description,
                 finalImageUrl: finalUrl,
-                dominantColor,
-                wipSteps: wipUrls,
+                dominantColor: currentDominantColor,
+                wipSteps: currentWipUrls,
                 available,
                 category,
               };
@@ -495,8 +491,6 @@ export default function AdminPage() {
         } else {
           // Upload new in Demo Mode
           finalUrl = "/canvas_art.png";
-          wipUrls = wipFiles.map((_, i) => i === 0 ? "/sketchbook_cover.png" : "/envelope_cover.png");
-          if (wipUrls.length === 0) wipUrls = ["/sketchbook_cover.png", "/envelope_cover.png", "/canvas_art.png"];
 
           const mockNewArt = {
             id: `demo-art-${Date.now()}`,
@@ -506,8 +500,8 @@ export default function AdminPage() {
             year: Number(year),
             description,
             finalImageUrl: finalUrl,
-            dominantColor,
-            wipSteps: wipUrls,
+            dominantColor: currentDominantColor,
+            wipSteps: currentWipUrls,
             available,
             category,
           };
@@ -525,18 +519,6 @@ export default function AdminPage() {
           finalUrl = await getDownloadURL(finalSnap.ref);
         }
 
-        // 2. Upload WIP images if new files are chosen
-        if (wipFiles.length > 0) {
-          for (const file of wipFiles) {
-            const wipRef = ref(storage, `artworks/wip/${Date.now()}_${file.name}`);
-            const wipSnap = await uploadBytes(wipRef, file);
-            const url = await getDownloadURL(wipSnap.ref);
-            wipUrls.push(url);
-          }
-        } else if (editingArtworkId) {
-          wipUrls = artworks.find((a) => a.id === editingArtworkId)?.wipSteps || [];
-        }
-
         if (editingArtworkId) {
           // Update in Firestore
           await setDoc(doc(db, "artworks", editingArtworkId), {
@@ -546,8 +528,8 @@ export default function AdminPage() {
             year: Number(year),
             description,
             finalImageUrl: finalUrl,
-            dominantColor,
-            wipSteps: wipUrls,
+            dominantColor: currentDominantColor,
+            wipSteps: currentWipUrls,
             available,
             category,
           }, { merge: true });
@@ -560,8 +542,8 @@ export default function AdminPage() {
             year: Number(year),
             description,
             finalImageUrl: finalUrl,
-            dominantColor,
-            wipSteps: wipUrls,
+            dominantColor: currentDominantColor,
+            wipSteps: currentWipUrls,
             available,
             category,
             createdAt: serverTimestamp(),
@@ -839,7 +821,7 @@ export default function AdminPage() {
       </motion.div>
 
       {/* Tabs Menu */}
-      <div className="flex gap-4 mb-8">
+      <div className="grid grid-cols-2 md:flex md:flex-wrap lg:flex-nowrap gap-3 mb-8 w-full">
         <button
           onClick={() => setActiveTab("upload")}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-lg border text-xs font-sans font-medium transition-all duration-300 cursor-pointer ${
@@ -1017,32 +999,8 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Right Column: Colors & Files */}
+                  {/* Right Column: Files & Availability */}
                   <div className="space-y-5">
-                    {/* Dominant Color Picker */}
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-wider text-white/40 mb-1 font-sans">
-                        Dominant Color Hex (Accent Trigger)
-                      </label>
-                      <div className="flex gap-3 items-center">
-                        <input
-                          type="color"
-                          value={dominantColor}
-                          onChange={(e) => setDominantColor(e.target.value)}
-                          className="w-10 h-10 rounded border border-white/10 bg-transparent cursor-pointer"
-                        />
-                        <input
-                          type="text"
-                          value={dominantColor}
-                          onChange={(e) => setDominantColor(e.target.value)}
-                          className="flex-1 px-3 py-2 bg-white/5 border border-white/10 rounded focus:border-accent outline-none text-sm text-white font-mono"
-                        />
-                      </div>
-                      <p className="text-[10px] text-white/40 mt-1">
-                        Determines the color shift of the background gradient on artwork hover.
-                      </p>
-                    </div>
-
                     {/* Final Image File Input */}
                     <div>
                       <label className="block text-[10px] uppercase tracking-wider text-white/40 mb-1 font-sans">
@@ -1065,31 +1023,6 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    {/* WIP Steps Images File Input */}
-                    <div>
-                      <label className="block text-[10px] uppercase tracking-wider text-white/40 mb-1.5 font-sans">
-                        Work-in-Progress (WIP) Stages (Select 2 files in sequence)
-                      </label>
-                      <label className="flex flex-col items-center justify-center border border-dashed border-white/15 hover:border-accent/40 rounded p-4 cursor-pointer bg-white/2 hover:bg-white/5 transition-all text-center">
-                        <Layers className="w-5 h-5 text-white/30 mb-1.5" />
-                        <span className="text-xs text-white/60">
-                          {wipFiles.length > 0 
-                            ? `${wipFiles.length} files selected: ${wipFiles.map(f => f.name).join(", ")}` 
-                            : "Choose image steps (sketch, underpainting, etc.)"}
-                        </span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={handleWipImagesChange}
-                          className="hidden"
-                        />
-                      </label>
-                      <p className="text-[10px] text-white/30 mt-1 leading-normal">
-                        Select multiple images in chronological order. First file maps to Initial Sketch, second to Underpainting.
-                      </p>
-                    </div>
-
                     {/* Available Toggle */}
                     <div className="flex items-center justify-between p-3 bg-white/3 rounded border border-white/5">
                       <div>
@@ -1110,12 +1043,12 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                <div className="pt-4 flex justify-end gap-3 border-t border-white/5">
+                <div className="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-white/5">
                   {editingArtworkId && (
                     <button
                       type="button"
                       onClick={handleCancelEdit}
-                      className="px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-sans font-semibold rounded transition-all duration-300 text-sm cursor-pointer"
+                      className="w-full sm:w-auto px-6 py-3 bg-white/10 hover:bg-white/15 text-white font-sans font-semibold rounded transition-all duration-300 text-sm cursor-pointer flex items-center justify-center"
                     >
                       Cancel Edit
                     </button>
@@ -1123,7 +1056,7 @@ export default function AdminPage() {
                   <button
                     type="submit"
                     disabled={uploading}
-                    className="px-6 py-3 bg-accent text-black font-sans font-semibold rounded hover:bg-opacity-90 transition-all duration-300 text-sm flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto px-6 py-3 bg-accent text-black font-sans font-semibold rounded hover:bg-opacity-90 transition-all duration-300 text-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {uploading ? (
                       <span>Saving Catalog Record...</span>
