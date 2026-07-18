@@ -37,7 +37,14 @@ export default function Navbar() {
         <div className="max-w-[92vw] xl:max-w-[85vw] mx-auto px-6 md:px-16 h-24 flex items-center justify-between">
           
           {/* Logo Section - Generic Template logo */}
-          <Link href="/" className="flex items-center gap-1.5 group cursor-pointer">
+          <Link 
+            href="/" 
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = "/";
+            }}
+            className="flex items-center gap-1.5 group cursor-pointer"
+          >
             <span className="text-lg sm:text-xl md:text-2xl font-serif text-[#f4edd2] tracking-wide group-hover:text-accent transition-colors duration-300">
               Life of Ritik <span className="font-sans text-xs text-white/50 lowercase hidden sm:inline-block">| Artworks</span>
             </span>
@@ -103,7 +110,11 @@ export default function Navbar() {
             <div className="flex flex-col gap-8 text-center">
               <Link
                 href="/"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMobileMenuOpen(false);
+                  window.location.href = "/";
+                }}
                 className="text-2xl font-serif text-[#f4edd2] mb-4 text-center"
               >
                 Life of Ritik | Artworks
