@@ -510,61 +510,87 @@ export default function Home() {
             {/* Anchored inner container box to prevent relative layout drifting far apart on wide screens */}
             <div className="relative w-full max-w-[440px] h-full flex items-center justify-center">
               
-              {/* Frame 1: Deep layer (sketchbook mock) */}
+              {/* Frame 1 Wrapper: Load Drop & Swing Animation */}
               <motion.div
-                style={{
-                  x: useTransform(springX, (x) => x * 0.7),
-                  y: useTransform(springY, (y) => y * 0.7),
+                initial={{ y: -700, rotate: -30, opacity: 0 }}
+                animate={{ y: 0, rotate: 0, opacity: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 30,
+                  damping: 9,
+                  mass: 1.6,
+                  delay: 0.2
                 }}
-                className="absolute left-2 min-[370px]:left-0 top-[8%] w-[135px] min-[370px]:w-[170px] sm:w-[210px] aspect-[3/4] z-10 animate-float-slow"
+                className="absolute left-2 min-[370px]:left-0 top-[8%] w-[135px] min-[370px]:w-[170px] sm:w-[210px] aspect-[3/4] z-10"
               >
-                <div className="museum-frame w-full h-full transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
-                  <div className="museum-mat w-full h-full">
-                    <div className="relative w-full h-full overflow-hidden bg-shimmer">
-                      {leftHeroSrc ? (
-                        <Image
-                          src={leftHeroSrc}
-                          alt="Artist Sketch Draft"
-                          fill
-                          sizes="(max-width: 640px) 170px, 210px"
-                          className="object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-500"
-                          priority
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-[#121110] flex items-center justify-center border border-white/5">
-                          <span className="text-[9px] uppercase tracking-widest text-[#dfae6f]/30 font-serif">Studio</span>
-                        </div>
-                      )}
+                {/* Hanging String/Thread */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 w-[1px] h-[70vh] bg-gradient-to-t from-white/35 via-white/10 to-transparent pointer-events-none origin-bottom" />
+                {/* Metallic Hook Ring */}
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full border border-white/30 bg-neutral-950 z-30" />
+
+                {/* Floating Layer */}
+                <div className="w-full h-full animate-float-slow">
+                  <div className="museum-frame w-full h-full transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
+                    <div className="museum-mat w-full h-full">
+                      <div className="relative w-full h-full overflow-hidden bg-shimmer">
+                        {leftHeroSrc ? (
+                          <Image
+                            src={leftHeroSrc}
+                            alt="Artist Sketch Draft"
+                            fill
+                            sizes="(max-width: 640px) 170px, 210px"
+                            className="object-cover opacity-90 grayscale hover:grayscale-0 transition-all duration-500"
+                            priority
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-[#121110] flex items-center justify-center border border-white/5">
+                            <span className="text-[9px] uppercase tracking-widest text-[#dfae6f]/30 font-serif">Studio</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </motion.div>
 
-              {/* Frame 2: Top focal layer (Main Canvas mock) */}
+              {/* Frame 2 Wrapper: Load Drop & Swing Animation */}
               <motion.div
-                style={{
-                  x: useTransform(springX, (x) => x * -1.2),
-                  y: useTransform(springY, (y) => y * -1.2),
+                initial={{ y: -800, rotate: 25, opacity: 0 }}
+                animate={{ y: 0, rotate: 0, opacity: 1 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 28,
+                  damping: 8,
+                  mass: 1.8,
+                  delay: 0.4
                 }}
-                className="absolute right-2 min-[370px]:right-0 bottom-[8%] w-[165px] min-[370px]:w-[200px] sm:w-[250px] aspect-[3/4] z-20 animate-float-reverse"
+                className="absolute right-2 min-[370px]:right-0 bottom-[8%] w-[165px] min-[370px]:w-[200px] sm:w-[250px] aspect-[3/4] z-20"
               >
-                <div className="museum-frame w-full h-full luxury-shadow-accent transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
-                  <div className="museum-mat w-full h-full">
-                    <div className="relative w-full h-full overflow-hidden bg-shimmer">
-                      {rightHeroSrc ? (
-                        <Image
-                          src={rightHeroSrc}
-                          alt="Bal Gopal Portrait"
-                          fill
-                          sizes="(max-width: 640px) 200px, 250px"
-                          priority
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-[#121110] flex items-center justify-center border border-white/5">
-                          <span className="text-[9px] uppercase tracking-widest text-[#dfae6f]/30 font-serif">Canvas</span>
-                        </div>
-                      )}
+                {/* Hanging String/Thread */}
+                <div className="absolute bottom-full left-1/2 -translate-x-1/2 w-[1px] h-[70vh] bg-gradient-to-t from-white/35 via-white/10 to-transparent pointer-events-none origin-bottom" />
+                {/* Metallic Hook Ring */}
+                <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full border border-white/30 bg-neutral-950 z-30" />
+
+                {/* Floating Layer */}
+                <div className="w-full h-full animate-float-reverse">
+                  <div className="museum-frame w-full h-full luxury-shadow-accent transform hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => scrollToSection("gallery")}>
+                    <div className="museum-mat w-full h-full">
+                      <div className="relative w-full h-full overflow-hidden bg-shimmer">
+                        {rightHeroSrc ? (
+                          <Image
+                            src={rightHeroSrc}
+                            alt="Bal Gopal Portrait"
+                            fill
+                            sizes="(max-width: 640px) 200px, 250px"
+                            priority
+                            className="object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-[#121110] flex items-center justify-center border border-white/5">
+                            <span className="text-[9px] uppercase tracking-widest text-[#dfae6f]/30 font-serif">Canvas</span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -841,6 +867,8 @@ export default function Home() {
                   key={`${t.id}-${idx}`}
                   src={t.screenshotUrl}
                   alt="Collector Review Screenshot"
+                  loading="lazy"
+                  decoding="async"
                   className="h-[200px] sm:h-[260px] w-auto object-contain rounded-xl border border-white/5 bg-neutral-950/80 shadow-2xl p-1 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] hover:scale-115 hover:z-50 hover:border-accent/45 hover:shadow-[0_30px_60px_rgba(0,0,0,0.9),0_0_20px_rgba(223,174,111,0.25)] flex-shrink-0 cursor-pointer"
                 />
               ))}
