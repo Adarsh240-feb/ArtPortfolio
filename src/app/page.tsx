@@ -334,6 +334,25 @@ export default function Home() {
     setContactLoading(true);
     setContactError("");
 
+    // Rate Limiting Protection (bot-prevention on Spark plan)
+    try {
+      const lastSubmission = localStorage.getItem("last_inquiry_time");
+      if (lastSubmission) {
+        const timePassed = Date.now() - Number(lastSubmission);
+        const waitTime = 1 * 60 * 1000; // 1 minute wait time
+        if (timePassed < waitTime) {
+          const secondsRemaining = Math.ceil((waitTime - timePassed) / 1000);
+          const minutes = Math.floor(secondsRemaining / 60);
+          const seconds = secondsRemaining % 60;
+          setContactError(`To prevent spam, please wait ${minutes > 0 ? `${minutes}m ` : ""}${seconds}s before submitting another message.`);
+          setContactLoading(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("Storage check failed, continuing", e);
+    }
+
     const hasFirebaseConfig =
       process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
       process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
@@ -358,6 +377,9 @@ export default function Home() {
 
     if (!hasFirebaseConfig) {
       saveLocally();
+      try {
+        localStorage.setItem("last_inquiry_time", Date.now().toString());
+      } catch (e) {}
       setContactSubmitted(true);
       setContactLoading(false);
       return;
@@ -368,6 +390,9 @@ export default function Home() {
         ...contactData,
         createdAt: serverTimestamp(),
       });
+      try {
+        localStorage.setItem("last_inquiry_time", Date.now().toString());
+      } catch (e) {}
       setContactSubmitted(true);
     } catch (err) {
       console.warn("Firestore save failed, submitting locally:", err);
