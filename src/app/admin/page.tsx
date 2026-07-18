@@ -44,6 +44,54 @@ import {
   Pencil
 } from "lucide-react";
 
+const compressImage = (file: File, maxWidth = 1200, quality = 0.85): Promise<File> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new window.Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const compressedFile = new File([blob], file.name, {
+                  type: "image/jpeg",
+                  lastModified: Date.now(),
+                });
+                resolve(compressedFile);
+              } else {
+                resolve(file);
+              }
+            },
+            "image/jpeg",
+            quality
+          );
+        } else {
+          resolve(file);
+        }
+      };
+      img.onerror = () => resolve(file);
+    };
+    reader.onerror = () => resolve(file);
+  });
+};
+
 interface Inquiry {
   id: string;
   name: string;
@@ -514,8 +562,9 @@ export default function AdminPage() {
         // Live Firebase Mode
         // 1. Upload Final Image if a new file is chosen
         if (finalImage) {
+          const compressedFile = await compressImage(finalImage, 1400, 0.82);
           const finalRef = ref(storage, `artworks/final/${Date.now()}_${finalImage.name}`);
-          const finalSnap = await uploadBytes(finalRef, finalImage);
+          const finalSnap = await uploadBytes(finalRef, compressedFile);
           finalUrl = await getDownloadURL(finalSnap.ref);
         }
 
@@ -593,8 +642,9 @@ export default function AdminPage() {
         const currentFeedbacks = savedFeedbacks ? JSON.parse(savedFeedbacks) : [];
         localStorage.setItem("demo_testimonials", JSON.stringify([newFeedback, ...currentFeedbacks]));
       } else {
+        const compressedFeedback = await compressImage(feedbackScreenshotFile, 1000, 0.85);
         const fileRef = ref(storage, `testimonials/review_${Date.now()}_${feedbackScreenshotFile.name}`);
-        const snap = await uploadBytes(fileRef, feedbackScreenshotFile);
+        const snap = await uploadBytes(fileRef, compressedFeedback);
         const screenshotUrl = await getDownloadURL(snap.ref);
 
         await addDoc(collection(db, "testimonials"), {
@@ -656,20 +706,23 @@ export default function AdminPage() {
         setHeroRightImageUrl(finalRightImageUrl);
       } else {
         if (aboutImageFile) {
+          const compressed = await compressImage(aboutImageFile, 800, 0.85);
           const fileRef = ref(storage, `settings/about_${Date.now()}_${aboutImageFile.name}`);
-          const snap = await uploadBytes(fileRef, aboutImageFile);
+          const snap = await uploadBytes(fileRef, compressed);
           finalImageUrl = await getDownloadURL(snap.ref);
           setAboutImageUrl(finalImageUrl);
         }
         if (heroLeftImageFile) {
+          const compressed = await compressImage(heroLeftImageFile, 1000, 0.85);
           const fileRef = ref(storage, `settings/hero_left_${Date.now()}_${heroLeftImageFile.name}`);
-          const snap = await uploadBytes(fileRef, heroLeftImageFile);
+          const snap = await uploadBytes(fileRef, compressed);
           finalLeftImageUrl = await getDownloadURL(snap.ref);
           setHeroLeftImageUrl(finalLeftImageUrl);
         }
         if (heroRightImageFile) {
+          const compressed = await compressImage(heroRightImageFile, 1000, 0.85);
           const fileRef = ref(storage, `settings/hero_right_${Date.now()}_${heroRightImageFile.name}`);
-          const snap = await uploadBytes(fileRef, heroRightImageFile);
+          const snap = await uploadBytes(fileRef, compressed);
           finalRightImageUrl = await getDownloadURL(snap.ref);
           setHeroRightImageUrl(finalRightImageUrl);
         }

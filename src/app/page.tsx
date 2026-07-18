@@ -686,54 +686,63 @@ export default function Home() {
 
         <div>
           <h3 className="text-2xl font-serif text-white mb-10 border-b border-white/5 pb-4 flex items-center gap-2.5">
-            <Award className="w-6 h-6 text-accent" />
-            <span>Special Highlights</span>
+            <Award className="w-5 h-5 text-accent" />
+            <span>Creative Highlights</span>
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-lg border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all duration-300 flex flex-col justify-between group min-h-[220px]">
+            {/* Highlight 01 */}
+            <div className="relative p-8 rounded-xl border border-white/5 bg-gradient-to-b from-white/3 to-transparent hover:from-white/5 hover:to-white/1 hover:border-[#dfae6f]/30 transition-all duration-500 flex flex-col justify-between group min-h-[250px] overflow-hidden shadow-lg">
+              {/* Subtle top gold accent bar */}
+              <div className="absolute top-0 left-0 w-0 h-[2px] bg-[#dfae6f] group-hover:w-full transition-all duration-500 ease-out" />
               <div>
-                <div className="w-10 h-10 rounded bg-accent/10 border border-accent/20 flex items-center justify-center text-accent mb-5">
-                  <Users className="w-5 h-5" />
-                </div>
-                <h4 className="text-base font-semibold text-white mb-3 group-hover:text-accent transition-colors">
-                  Realistic Portraiture
+                <span className="font-serif italic text-5xl text-[#dfae6f]/10 group-hover:text-[#dfae6f]/25 transition-colors duration-500 block mb-4">
+                  01
+                </span>
+                <h4 className="text-base font-serif text-white mb-3 group-hover:text-accent transition-colors duration-300 tracking-wide">
+                  The Graphite Pulse
                 </h4>
                 <p className="text-xs md:text-sm text-white/50 leading-relaxed font-sans font-light">
-                  Specializing in capturing precise human expressions, emotions, and subtle light gradients using graphite and charcoal blending.
+                  The pure translation of human emotion onto paper. Using varying grades of graphite, charcoal powders, and custom dry brush techniques to create lifelike textures and deep, soul-stirring eyes.
                 </p>
               </div>
-              <span className="text-[9px] md:text-[10px] font-mono text-white/30 uppercase mt-6 block">Portrait Detail</span>
+              <span className="text-[9px] font-mono text-[#dfae6f]/35 group-hover:text-[#dfae6f]/60 transition-colors uppercase tracking-widest mt-6 block">Portraiture Atelier</span>
             </div>
 
-            <div className="p-8 rounded-lg border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all duration-300 flex flex-col justify-between group min-h-[220px]">
+            {/* Highlight 02 */}
+            <div className="relative p-8 rounded-xl border border-white/5 bg-gradient-to-b from-white/3 to-transparent hover:from-white/5 hover:to-white/1 hover:border-[#dfae6f]/30 transition-all duration-500 flex flex-col justify-between group min-h-[250px] overflow-hidden shadow-lg">
+              {/* Subtle top gold accent bar */}
+              <div className="absolute top-0 left-0 w-0 h-[2px] bg-[#dfae6f] group-hover:w-full transition-all duration-500 ease-out" />
               <div>
-                <div className="w-10 h-10 rounded bg-accent/10 border border-accent/20 flex items-center justify-center text-accent mb-5">
-                  <Compass className="w-5 h-5" />
-                </div>
-                <h4 className="text-base font-semibold text-white mb-3 group-hover:text-accent transition-colors">
-                  Devotional Artworks
+                <span className="font-serif italic text-5xl text-[#dfae6f]/10 group-hover:text-[#dfae6f]/25 transition-colors duration-500 block mb-4">
+                  02
+                </span>
+                <h4 className="text-base font-serif text-white mb-3 group-hover:text-accent transition-colors duration-300 tracking-wide">
+                  Sacred Shringar
                 </h4>
                 <p className="text-xs md:text-sm text-white/50 leading-relaxed font-sans font-light">
-                  Creating highly-detailed, peaceful depictions of Hindu deities like Bal Gopal, Radha Krishna, Lord Ram, and Ganesha.
+                  A meditative study of divinity. Recreating the serene grace of Bal Gopal, Radha-Krishna, and Lord Ram, capturing their ornaments, folds of garments, and spiritual expressions with deep devotion.
                 </p>
               </div>
-              <span className="text-[9px] md:text-[10px] font-mono text-white/30 uppercase mt-6 block">Spiritual Focus</span>
+              <span className="text-[9px] font-mono text-[#dfae6f]/35 group-hover:text-[#dfae6f]/60 transition-colors uppercase tracking-widest mt-6 block">Spiritual Focus</span>
             </div>
 
-            <div className="p-8 rounded-lg border border-white/5 bg-white/2 hover:bg-white/4 hover:border-white/10 transition-all duration-300 flex flex-col justify-between group min-h-[220px]">
+            {/* Highlight 03 */}
+            <div className="relative p-8 rounded-xl border border-white/5 bg-gradient-to-b from-white/3 to-transparent hover:from-white/5 hover:to-white/1 hover:border-[#dfae6f]/30 transition-all duration-500 flex flex-col justify-between group min-h-[250px] overflow-hidden shadow-lg">
+              {/* Subtle top gold accent bar */}
+              <div className="absolute top-0 left-0 w-0 h-[2px] bg-[#dfae6f] group-hover:w-full transition-all duration-500 ease-out" />
               <div>
-                <div className="w-10 h-10 rounded bg-accent/10 border border-accent/20 flex items-center justify-center text-accent mb-5">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <h4 className="text-base font-semibold text-white mb-3 group-hover:text-accent transition-colors">
-                  Process Sharing & Shorts
+                <span className="font-serif italic text-5xl text-[#dfae6f]/10 group-hover:text-[#dfae6f]/25 transition-colors duration-500 block mb-4">
+                  03
+                </span>
+                <h4 className="text-base font-serif text-white mb-3 group-hover:text-accent transition-colors duration-300 tracking-wide">
+                  The Atelier Process
                 </h4>
                 <p className="text-xs md:text-sm text-white/50 leading-relaxed font-sans font-light">
-                  Actively building an artistic community by sharing step-by-step reels, process videos, and tutorials of sketch transformations.
+                  Lifting the veil on fine art. Documenting every single pencil stroke, underdrawing, and shading step in video diaries, inviting a community of 10,000+ artists into the creative process.
                 </p>
               </div>
-              <span className="text-[9px] md:text-[10px] font-mono text-white/30 uppercase mt-6 block">Social Creator</span>
+              <span className="text-[9px] font-mono text-[#dfae6f]/35 group-hover:text-[#dfae6f]/60 transition-colors uppercase tracking-widest mt-6 block">Community Sharing</span>
             </div>
           </div>
         </div>
