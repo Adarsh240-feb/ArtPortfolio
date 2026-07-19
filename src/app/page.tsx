@@ -147,6 +147,60 @@ const CATEGORIES = [
 
 const MOCK_ARTWORKS: Artwork[] = [];
 
+interface CounterProps {
+  target: number;
+  suffix?: string;
+  duration?: number;
+}
+
+function Counter({ target, suffix = "", duration = 1500 }: CounterProps) {
+  const [count, setCount] = useState(0);
+  const elementRef = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    let animationFrameId: number;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          let startTimestamp: number | null = null;
+          const step = (timestamp: number) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            setCount(Math.floor(progress * target));
+            if (progress < 1) {
+              animationFrameId = window.requestAnimationFrame(step);
+            }
+          };
+          animationFrameId = window.requestAnimationFrame(step);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (elementRef.current) {
+      observer.observe(elementRef.current);
+    }
+
+    return () => {
+      observer.disconnect();
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [target, duration]);
+
+  return (
+    <span ref={elementRef}>
+      {count}
+      {suffix}
+    </span>
+  );
+}
+
 export default function Home() {
   const router = useRouter();
   const { setPaletteFromColor, resetPalette } = usePalette();
@@ -691,19 +745,27 @@ export default function Home() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 p-10 md:p-12 rounded-xl border border-white/5 bg-white/2 backdrop-blur-sm mb-24">
           <div className="text-center md:border-r border-white/5 last:border-0 py-3">
-            <div className="text-4xl md:text-5xl font-serif text-accent font-light">5+</div>
+            <div className="text-4xl md:text-5xl font-serif text-accent font-light">
+              <Counter target={5} suffix="+" />
+            </div>
             <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/50 mt-2">Years Active</div>
           </div>
           <div className="text-center md:border-r border-white/5 last:border-0 py-3">
-            <div className="text-4xl md:text-5xl font-serif text-accent font-light">300+</div>
+            <div className="text-4xl md:text-5xl font-serif text-accent font-light">
+              <Counter target={300} suffix="+" />
+            </div>
             <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/50 mt-2">Sketches Created</div>
           </div>
           <div className="text-center md:border-r border-white/5 last:border-0 py-3">
-            <div className="text-4xl md:text-5xl font-serif text-accent font-light">10K+</div>
+            <div className="text-4xl md:text-5xl font-serif text-accent font-light">
+              <Counter target={10} suffix="K+" />
+            </div>
             <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/50 mt-2">Art Community</div>
           </div>
           <div className="text-center py-3">
-            <div className="text-4xl md:text-5xl font-serif text-accent font-light">120+</div>
+            <div className="text-4xl md:text-5xl font-serif text-accent font-light">
+              <Counter target={120} suffix="+" />
+            </div>
             <div className="text-[10px] md:text-xs uppercase tracking-wider text-white/50 mt-2">Commissions Closed</div>
           </div>
         </div>
